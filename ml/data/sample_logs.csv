@@ -1,0 +1,63 @@
+log_line,label
+"2024-01-15 08:12:33 firewall ALLOW tcp 192.168.1.45:52341 -> 10.0.0.12:443 ESTABLISHED",Benign
+"2024-01-15 08:13:01 auth SUCCESS user=jsmith login from 192.168.1.45 workstation WS-042",Benign
+"2024-01-15 08:14:22 dns QUERY A www.example.com client 192.168.1.88 RESPONSE 93.184.216.34",Benign
+"2024-01-15 08:15:44 firewall ALLOW udp 192.168.1.12:49152 -> 8.8.8.8:53 DNS",Benign
+"2024-01-15 08:16:10 proxy GET https://intranet.corp.local/dashboard status=200 user=admin",Benign
+"2024-01-15 08:17:55 dhcp ACK 192.168.1.105 to MAC aa:bb:cc:dd:ee:ff lease 86400",Benign
+"2024-01-15 08:18:30 smtp OUTBOUND from hr@corp.local to partner@vendor.com subject=Quarterly report",Benign
+"2024-01-15 08:19:02 vpn CONNECT user=mlee endpoint 203.0.113.5 tunnel established",Benign
+"2024-01-15 08:20:11 backup COMPLETE job=nightly_db duration=42m status=OK",Benign
+"2024-01-15 08:21:33 ntp SYNC server=time.corp.local offset=0.002ms",Benign
+"2024-01-15 08:22:48 firewall ALLOW tcp 10.0.0.5:22 <- 192.168.1.200:60211 SSH admin jump host",Benign
+"2024-01-15 08:23:15 waf ALLOW /api/v1/health check from monitoring 10.0.0.99",Benign
+"2024-01-15 08:24:00 ldap BIND cn=svc_scan,ou=services,dc=corp,dc=local SUCCESS",Benign
+"2024-01-15 08:25:17 fileshare READ \\fileserver\shared\policy.pdf user=jsmith",Benign
+"2024-01-15 08:26:40 antivirus SCAN workstation WS-042 clean no threats",Benign
+"2024-01-15 08:27:03 firewall ALLOW icmp 192.168.1.1 -> 192.168.1.50 echo reply",Benign
+"2024-01-15 08:28:19 auth SUCCESS user=dbadmin login from 10.0.0.20 bastion",Benign
+"2024-01-15 08:29:55 loadbalancer HEALTH backend pool web-01,web-02 all UP",Benign
+"2024-01-15 08:30:12 ids INFO baseline traffic volume within normal range segment DMZ",Benign
+"2024-01-15 08:31:44 firewall ALLOW tcp 192.168.1.77:54321 -> mail.corp.local:993 IMAPS",Benign
+"2024-01-15 08:32:08 auth FAILED user=admin password incorrect from 198.51.100.44 attempt 1",Suspicious
+"2024-01-15 08:33:22 auth FAILED user=root password incorrect from 198.51.100.44 attempt 2",Suspicious
+"2024-01-15 08:34:01 firewall DENY tcp 198.51.100.44:38422 -> 10.0.0.5:22 SSH brute force pattern",Suspicious
+"2024-01-15 08:35:17 ids ALERT port scan detected src=203.0.113.88 dst=10.0.0.0/24 120 ports in 30s",Suspicious
+"2024-01-15 08:36:40 dns QUERY TXT suspicious-domain.tk client 192.168.1.55 NXDOMAIN",Suspicious
+"2024-01-15 08:37:12 proxy BLOCK category=malware url=http://185.220.101.42/payload.exe user=unknown",Suspicious
+"2024-01-15 08:38:55 auth FAILED user=administrator login from 192.168.1.99 15 failures in 5 min",Suspicious
+"2024-01-15 08:39:20 firewall DENY icmp 203.0.113.12 -> 10.0.0.0/24 ping sweep detected",Suspicious
+"2024-01-15 08:40:03 ids ALERT TOR exit node 185.220.101.1 attempted connection to internal wiki",Suspicious
+"2024-01-15 08:41:28 waf BLOCK SQL injection attempt in query param id=1' OR '1'='1 from 198.51.100.90",Suspicious
+"2024-01-15 08:42:44 endpoint DETECT suspicious PowerShell encoded command base64 length=4096 user=temp",Suspicious
+"2024-01-15 08:43:10 auth FAILED invalid MFA token user=finance from 45.33.32.156 geo=unexpected",Suspicious
+"2024-01-15 08:44:33 firewall DENY tcp 45.33.32.156:49111 -> 10.0.0.15:3389 RDP from foreign IP",Suspicious
+"2024-01-15 08:45:01 ids ALERT horizontal scan smb 445 from 192.168.1.150 to 50 hosts",Suspicious
+"2024-01-15 08:46:19 dns QUERY A dga-random-xk9f2m.biz client 192.168.1.33 high entropy domain",Suspicious
+"2024-01-15 08:47:52 proxy ALERT outbound connection to newly registered domain age=2 days",Suspicious
+"2024-01-15 08:48:07 auth LOCKOUT user=svc_backup after 10 failed attempts from 10.0.0.88",Suspicious
+"2024-01-15 08:49:30 firewall DENY udp 203.0.113.200:53 -> 10.0.0.12:53 DNS amplification attempt",Suspicious
+"2024-01-15 08:50:15 ids ALERT credential stuffing 200 failed logins across 40 accounts src=198.51.100.44",Suspicious
+"2024-01-15 08:51:40 endpoint ALERT lsass memory access from unknown process pid=8844",Suspicious
+"2024-01-15 08:52:22 waf BLOCK path traversal attempt ../../etc/passwd from 203.0.113.55",Suspicious
+"2024-01-15 09:01:11 antivirus MALWARE detected trojan.win32.emotet hash=abc123 on WS-017 quarantined",Malicious
+"2024-01-15 09:02:33 ids CRITICAL C2 beacon outbound 10.0.0.44:8443 -> 185.220.101.42 interval=60s",Malicious
+"2024-01-15 09:03:45 firewall DENY tcp 10.0.0.44:4444 -> 198.51.100.99:4444 known reverse shell signature",Malicious
+"2024-01-15 09:04:02 endpoint CRITICAL ransomware file encryption mass rename .locked extension user=jsmith",Malicious
+"2024-01-15 09:05:18 ids CRITICAL exploit attempt CVE-2024-1234 against 10.0.0.8 from 203.0.113.77",Malicious
+"2024-01-15 09:06:40 proxy BLOCK malware download EICAR test file from 185.220.101.42",Malicious
+"2024-01-15 09:07:55 auth CRITICAL impossible travel user=ceo login US then RU within 5 minutes",Malicious
+"2024-01-15 09:08:12 endpoint CRITICAL process injection CreateRemoteThread target=svchost.exe attacker=malware.exe",Malicious
+"2024-01-15 09:09:30 firewall DENY tcp botnet C2 channel detected src=192.168.1.200 dst=45.33.32.156:8080",Malicious
+"2024-01-15 09:10:44 ids CRITICAL data exfiltration 2.3GB outbound to cloud storage from db-server",Malicious
+"2024-01-15 09:11:05 waf CRITICAL webshell upload detected POST /upload.php shell.php from 198.51.100.44",Malicious
+"2024-01-15 09:12:20 antivirus MALWARE ransomware.wannacry variant blocked on server FILE-01",Malicious
+"2024-01-15 09:13:33 endpoint CRITICAL persistence scheduled task EvilTask created by powershell -enc",Malicious
+"2024-01-15 09:14:50 ids CRITICAL lateral movement psexec from compromised host 10.0.0.44 to domain controller",Malicious
+"2024-01-15 09:15:02 firewall DENY icmp tunneling suspected large payload in echo requests 203.0.113.88",Malicious
+"2024-01-15 09:16:18 dns CRITICAL DNS tunneling query length=255 subdomain entropy=high client 10.0.0.44",Malicious
+"2024-01-15 09:17:40 endpoint CRITICAL credential dump mimikatz sekurlsa::logonpasswords detected",Malicious
+"2024-01-15 09:18:55 proxy CRITICAL exfil POST 500MB to pastebin.com from finance workstation",Malicious
+"2024-01-15 09:19:11 auth CRITICAL privileged account compromise admin session from TOR exit node",Malicious
+"2024-01-15 09:20:27 ids CRITICAL zero-day exploit shellcode in HTTP body against 10.0.0.12",Malicious
+"2024-01-15 09:21:03 firewall CRITICAL block outbound connection to known APT infrastructure 45.33.32.156",Malicious

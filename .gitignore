@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+*.egg-info/
+.pytest_cache/
+
+# ML artifacts (regenerate with ml/train.py)
+ml/models/*.joblib
+
+# Node
+node_modules/
+frontend/dist/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# SQLite (optional local dev)
+backend/data/*.db
+
+..\.venv\Scripts\Activate.ps1 
+uvicorn app.main:app --reload --port 8001 
