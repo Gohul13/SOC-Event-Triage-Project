@@ -1,43 +1,44 @@
-# Raksha SOC — Security Event Triage Dashboard
+# Raksha SOC – Security Event Triage Dashboard
 
-Mini full-stack application for ingesting security log lines, classifying risk with a lightweight ML model (Benign / Suspicious / Malicious), and triaging events from a React analyst dashboard.
+A full-stack security event triage application that ingests security logs, classifies them as **Benign, Suspicious, or Malicious** using Machine Learning, and allows analysts to review and manage events through a React dashboard.
 
-## Architecture
+## Tech Stack
+
+- **Frontend:** React.js, Vite
+- **Backend:** Python, FastAPI
+- **Database:** SQLite
+- **Machine Learning:** TF-IDF, Logistic Regression
+- **API:** REST API with API key authentication for write operations
+
+## Features
+
+- Ingest security log events
+- Automatically classify events based on risk
+- View and filter events by risk level, source, and status
+- View event details and statistics
+- Update event status to Reviewed, False Positive, or Escalated
+- Train and evaluate the ML model using sample log data
+
+## Project Structure
 
 ```text
-┌─────────────┐     REST (JSON)      ┌──────────────────┐
-│ React UI    │ ◄──────────────────► │ FastAPI backend  │
-│ (Vite)      │   GET /events/stats  │  + SQLite        │
-└─────────────┘   POST/PATCH + API key └────────┬─────────┘
-                                                 │
-                                                 ▼
-                                        TF-IDF + Logistic Regression
-                                        (joblib artifact from ml/train.py)
+raksha-soc-triage/
+├── backend/
+│   ├── app/
+│   ├── scripts/
+│   └── tests/
+├── frontend/
+├── ml/
+│   ├── data/
+│   ├── models/
+│   └── train.py
+└── README.md 
 ```
 
-| Layer | Path | Role |
-|--------|------|------|
-| Frontend | `frontend/` | Dashboard, filters, chart, detail panel, status updates |
-| Backend | `backend/app/` | REST API, validation, auth, persistence |
-| ML | `ml/` | Labeled sample data, training script, model artifact |
 
-## Assumptions
+### 1. Set Up the Backend
 
-- **Auth**: Write endpoints (`POST /events`, `PATCH /events/{id}`) require header `X-API-Key`. Read endpoints are open for the local demo dashboard (documented in README; tighten in production).
-- **Classification**: Runs synchronously on ingest; confidence is the predicted class probability from logistic regression.
-- **Status**: New events start as `Pending`; analysts set `Reviewed`, `False Positive`, or `Escalated` via PATCH/UI.
-- **Dataset**: Synthetic log lines in `ml/data/sample_logs.csv` (60 rows), inspired by common SOC log patterns—not real customer data.
-
-## Prerequisites
-
-- Python 3.11+
-- Node.js 18+
-
-## Setup
-
-### 1. Python environment & model
-
-From the repository root:
+From the project root, run:
 
 ```powershell
 python -m venv .venv
@@ -46,89 +47,55 @@ pip install -r backend/requirements.txt
 python ml/train.py
 ```
 
-Training writes:
-
-- `ml/models/log_classifier.joblib`
-- `ml/models/training_metrics.json` (accuracy, macro F1, classification report)
-
-**Validation approach**: stratified 75/25 train/test split (`random_state=42`), reporting accuracy and macro F1 on the holdout set.
-
-### 2. Backend
+### 2. Start the Backend
 
 ```powershell
 cd backend
-copy .env.example .env
-# Edit API_KEY if desired
-mkdir data -Force
+Copy-Item .env.example .env
 uvicorn app.main:app --reload --port 8000
 ```
 
-API docs: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+API documentation: http://127.0.0.1:8000/docs
 
-### 3. Frontend
+### 3. Start the Frontend
+
+Open a new terminal:
 
 ```powershell
 cd frontend
-copy .env.example .env
-# Set VITE_API_KEY to match backend API_KEY
+Copy-Item .env.example .env
 npm install
 npm run dev
 ```
 
-Open [http://127.0.0.1:5173](http://127.0.0.1:5173). Vite proxies `/api` → backend.
+Open http://127.0.0.1:5173 in your browser.
 
-### 4. Seed demo events (optional)
+## API Endpoints
 
-With the API running:
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/events` | Ingest security events |
+| GET | `/events` | Retrieve and filter events |
+| GET | `/events/{id}` | View event details |
+| PATCH | `/events/{id}` | Update event status |
+| GET | `/stats` | Retrieve event statistics |
 
-```powershell
-$env:API_KEY = "dev-api-key-change-in-production"  # match .env
-python backend/scripts/seed_sample_events.py
-```
 
-## API summary
+## Machine Learning
 
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| POST | `/events` | Yes | Single event, `{ "events": [...] }`, or JSON array |
-| GET | `/events` | No | Filter: `risk_level`, `source`, `status`, `from`, `to` |
-| GET | `/events/{id}` | No | Event detail |
-| PATCH | `/events/{id}` | Yes | Body: `{ "status": "Reviewed" \| "False Positive" \| "Escalated" }` |
-| GET | `/stats` | No | Totals by risk and source |
+The model uses TF-IDF and Logistic Regression to classify security logs. The training dataset contains synthetic sample logs created for this project.
 
-## Retrain the model
-
-After editing `ml/data/sample_logs.csv`:
+To retrain the model, run:
 
 ```powershell
 python ml/train.py
 ```
 
-Restart the backend to reload the classifier (or redeploy).
+## Run Tests
 
-## Tests
+From the project root:
 
 ```powershell
 cd backend
 pytest tests/ -q
 ```
-
-## Project structure
-
-```text
-raksha-soc-triage/
-├── backend/
-│   ├── app/           # FastAPI application
-│   ├── scripts/       # Seed helper
-│   └── tests/
-├── frontend/          # React dashboard
-├── ml/
-│   ├── data/          # Labeled training CSV
-│   ├── models/        # Generated artifacts
-│   └── train.py
-└── README.md
-```
-
-## External data
-
-All training labels are **synthetic** lines authored for this assignment. No third-party log dump was copied verbatim.
